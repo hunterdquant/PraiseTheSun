@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                                        .replace(R.id.baseContainer, new PlaceHolderFragment())
+                                        .replace(R.id.baseContainer, new ForecastFragment())
                                         .commit();
         }
     }
