@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -34,25 +36,38 @@ public class ForecastFragment extends Fragment {
         json = "";
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
 
         View root = inflater.inflate(R.layout.fragment_forecast, container, false);
-        String [] forcast = {
+        String [] forecast = {
           " this", "is", "me"
         };
 
-        List<String> forcastList = new ArrayList<String>(Arrays.asList(forcast));
+        List<String> forecastList = new ArrayList<String>(Arrays.asList(forecast));
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast,
-                                                R.id.list_item_forecast_textview, forcastList);
+                                                R.id.list_item_forecast_textview, forecastList);
 
         ListView listView = (ListView) root.findViewById(R.id.listview_forecast);
         listView.setAdapter(adapter);
         return root;
     }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+    }
+
 
 
     private class RetrieveWeatherTask extends AsyncTask<Void, Void, Void> {
