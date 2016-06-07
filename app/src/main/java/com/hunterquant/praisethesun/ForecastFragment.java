@@ -1,5 +1,6 @@
 package com.hunterquant.praisethesun;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,8 +14,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +38,8 @@ import java.util.List;
  * Created by hunter on 6/3/16.
  */
 public class ForecastFragment extends Fragment {
+
+    public static final String DETAILS = "DETAILS";
 
     private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?";
     private static final String API_PARAM = "APPID";
@@ -71,6 +76,18 @@ public class ForecastFragment extends Fragment {
 
         ListView listView = (ListView) root.findViewById(R.id.listview_forecast);
         listView.setAdapter(forecastAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle = new Bundle();
+                bundle.putString(DETAILS, forecastAdapter.getItem(position).toString());
+
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), WeatherDetailsActivity.class);
+                intent.putExtra(DETAILS, forecastAdapter.getItem(position).toString());
+                startActivity(intent, bundle);
+            }
+        });
         return root;
     }
 
@@ -87,6 +104,11 @@ public class ForecastFragment extends Fragment {
         if (itemId == R.id.action_refresh) {
             RetrieveWeatherTask task = new RetrieveWeatherTask();
             task.execute("14546");
+            return true;
+        } else if (itemId == R.id.action_settings) {
+            Intent intent = new Intent();
+            intent.setClass(getActivity(), SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 
