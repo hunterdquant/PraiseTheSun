@@ -5,6 +5,8 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
 
+    <string name="action_map">Map Location</string>
+
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
@@ -51,7 +53,17 @@
         <item>-1</item>
     </string-array>
 
-    <string name="pref_title_system_sync_settings">System sync settings</string>
+    <string name="pref_location_title">Location</string>
+    <string name="pref_location_key" translatable="false">Location</string>
+    <string name="pref_default_location">14546</string>
+
+    <string name="pref_units_title">Units</string>
+    <string name="pref_units_key" translatable="false">Units</string>
+    <string name="pref_units_metric" translatable="false">metric</string>
+    <string name="pref_units_imperial" translatable="false">imperial</string>
+
+
+    <string name="pref_title_system_sync_settings" translatable="false">System sync settings</string>
 
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>

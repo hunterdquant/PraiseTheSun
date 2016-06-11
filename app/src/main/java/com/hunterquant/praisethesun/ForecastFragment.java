@@ -1,9 +1,12 @@
 package com.hunterquant.praisethesun;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
@@ -102,18 +105,49 @@ public class ForecastFragment extends Fragment {
         int itemId = item.getItemId();
 
         if (itemId == R.id.action_refresh) {
-            RetrieveWeatherTask task = new RetrieveWeatherTask();
-            task.execute("14546");
+            updateWeather();
             return true;
         } else if (itemId == R.id.action_settings) {
             Intent intent = new Intent();
             intent.setClass(getActivity(), SettingsActivity.class);
             startActivity(intent);
             return true;
+        } else if (itemId == R.id.action_map) {
+            openPreferredLocationMap();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void openPreferredLocationMap() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String loc = prefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_default_location));
+
+        Uri geoLoc = Uri.parse("geo:0,0?").buildUpon().appendQueryParameter("q", loc).build();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLoc);
+
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Log.d("TEST", "Couldn't get " + loc + ", no map ");
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
+    public void updateWeather() {
+        RetrieveWeatherTask task = new RetrieveWeatherTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        task.execute(prefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_default_location)));
+    }
+
 
     private class RetrieveWeatherTask extends AsyncTask<String, Void, String[]> {
 
@@ -210,6 +244,14 @@ public class ForecastFragment extends Fragment {
         }
 
         private String formatHighLows(double high, double low) {
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String unitType = prefs.getString(getString(R.string.pref_units_key), getString(R.string.pref_units_metric));
+
+            if (unitType.equals(getString(R.string.pref_units_imperial))) {
+                high = (high * 1.8) + 32;
+                low = (low * 1.8) + 32;
+            }
 
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
